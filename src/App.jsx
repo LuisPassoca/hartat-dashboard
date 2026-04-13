@@ -1,12 +1,26 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
-import HelloWorld from './components/HelloWorld'
+
+import Home from './pages/Home'
+import Dashboard from './pages/Dashboard'
+import DashboardHome from './pages/dashboard/DashboardHome'
+import Post from './pages/dashboard/Post'
 
 function App() {
 
   return (
     <>
-      <HelloWorld />
-      <p> Welcome to the homepage! </p>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Home />} />
+          
+          <Route path="/dashboard" element={<Dashboard />}>
+            <Route index element={<DashboardHome />} />
+            <Route path="post" element={<Post />} />
+          </Route>
+
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
