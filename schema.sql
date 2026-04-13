@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS posts (
+    id INTEGER PRIMARY KEY,
+    html TEXT NOT NULL
+);
