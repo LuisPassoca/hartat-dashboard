@@ -19,17 +19,11 @@ function QuillEditor() {
       theme: "snow",
       modules: {
         toolbar: [
-          [{ 'header': [1, 2, false] }],
-          [
-            'bold', 'italic', 'underline', 'strike', 
-            { 'script': 'sub' }, { 'script': 'super' }
-          ],
-          [ 
-            { 'align': [] }, 
-            { 'list': 'ordered'}, 
-            { 'list': 'bullet' }, { 'list': 'check' }, 
-            { 'indent': '-1'}, { 'indent': '+1' }
-          ],
+          [{ 'header': [false, 2, 1] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'script': 'sub' }, { 'script': 'super' }],
+          [{ 'align': [] }, { 'indent': '-1'}, { 'indent': '+1' }],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
           ['link', 'image', 'video'],
         ],
         resize: {
@@ -40,7 +34,8 @@ function QuillEditor() {
   }, [])
 
   const getContents = () => {
-    console.log(quillRef.current.getSemanticHTML())
+    console.log(quillRef.current.getContents())
+
   }
 
   return(
