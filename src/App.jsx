@@ -3,8 +3,7 @@ import './App.css'
 
 import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
-import DashboardHome from './pages/dashboard/DashboardHome'
-import Post from './pages/dashboard/Post'
+import Editor from './pages/dashboard/Editor'
 
 function App() {
 
@@ -13,12 +12,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route index element={<Home />} />
-          
-          <Route path="/dashboard" element={<Dashboard />}>
-            <Route index element={<DashboardHome />} />
-            <Route path="post" element={<Post />} />
+          <Route path='/dashboard' element={<Dashboard />}>
+            <Route path='editor' element={<Editor />} />
           </Route>
-
         </Routes>
       </BrowserRouter>
     </>
