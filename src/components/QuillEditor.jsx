@@ -1,5 +1,5 @@
 import Quill from "quill"
-import { createElement, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import "quill/dist/quill.snow.css"
 
 import QuillResize from "quill-resize-module"
@@ -14,17 +14,9 @@ function QuillEditor() {
   const quillRef = useRef(null)
 
   const imageHandler = async () => {
-
-      const input = document.createElement('input')
-      input.type = 'file'
-      input.accept = 'image/*'
-      input.click() 
-
-      const uploadAPI = 'https://picsur.org/api/image/upload'
-      const uploadImage = async (input) => {
+      const uploadImage = async () => {
         const image = input.files[0]
         const form = new FormData()
-
         form.append('image', image)
 
         const res = await fetch('/api/upload-image', {
@@ -33,21 +25,22 @@ function QuillEditor() {
         })
 
         const { data } = await res.json()
-
-        const imageURL = `https://picsur.org/i/${data.id}.jpg`
         
         const range = quillRef.current.getSelection()
-        quillRef.current.insertEmbed(range.index, 'image', imageURL)
+        quillRef.current.insertEmbed(range.index, 'image', data.imageURL)
       }
 
-      input.addEventListener('change', (e) => {
-        uploadImage(input)
-      })
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = 'image/*'
+      input.click() 
+
+      input.addEventListener('change', uploadImage)
   }
 
   useEffect(() => {
     quillRef.current = new Quill(editorRef.current, {
-      placeholder: "Digite sua postagem aqui...",
+      placeholder: "Conteúdo da postagem",
       theme: "snow",
       modules: {
         toolbar: {
@@ -75,7 +68,7 @@ function QuillEditor() {
   return(
     <>
       <div id="quill-editor" ref={editorRef} />
-      <button onClick={getContents}> Get editor Delta </button>
+      <button onClick={getContents}> Get editor contents </button>
     </>
   )
 }

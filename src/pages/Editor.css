@@ -1,0 +1,22 @@
+h1[contenteditable = 'true']:empty::before {
+    content: "Título da postagem";
+
+    color: rgb(110, 110, 110);
+    font-style: italic;
+    font-weight: 300;
+}
+
+h1[contenteditable = 'true'] {
+    cursor: pointer;
+    width: fit-content;
+}
+
+
+#quill-editor {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+
+    width: 100%;
+}

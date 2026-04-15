@@ -1,5 +1,0 @@
-h1[contenteditable = 'true']:empty::before {
-    content: "Adicionar título...";
-    color: rgb(110, 110, 110);
-    font-style: italic;
-}

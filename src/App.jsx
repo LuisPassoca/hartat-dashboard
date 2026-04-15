@@ -1,23 +1,29 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 
+import Sidebar from './components/Sidebar'
 import Home from './pages/Home'
-import Dashboard from './pages/Dashboard'
-import Editor from './pages/dashboard/Editor'
+import Editor from './pages/Editor'
 
 function App() {
 
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<Home />} />
-          <Route path='/dashboard' element={<Dashboard />}>
-            <Route path='editor' element={<Editor />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <div className="layout">
+            <aside className="sidebar">
+                <Sidebar />
+            </aside>
+
+            <div className='content'>
+
+              <Routes> 
+                <Route index element={<Home />} />
+                <Route path='/editor' element={<Editor />} />
+              </Routes>
+
+            </div>
+        </div>   
+    </BrowserRouter>
   )
 }
 
