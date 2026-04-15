@@ -8,7 +8,7 @@ h1[contenteditable = 'true']:empty::before {
 
 h1[contenteditable = 'true'] {
     cursor: pointer;
-    width: fit-content;
+    background-color: rgb(233, 233, 233);
 }
 
 

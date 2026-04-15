@@ -17,6 +17,7 @@ function Editor() {
 
     return(
         <>
+            <h2> Título da postagem: </h2>
             <h1 contentEditable='true' onKeyDown={preventEnter} onInput={checkEmpty} style={{outline: 'none'}}></h1>
             <QuillEditor />
         </>
