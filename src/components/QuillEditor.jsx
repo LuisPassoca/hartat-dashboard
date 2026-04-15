@@ -1,5 +1,5 @@
 import Quill from "quill"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import "quill/dist/quill.snow.css"
 
 import QuillResize from "quill-resize-module"
@@ -8,10 +8,12 @@ import 'quill-resize-module/dist/resize.css'
 Quill.register('modules/resize', QuillResize)
 
 import './QuillEditor.css'
+import ImagePicker from "./ImagePicker"
 
 function QuillEditor() {
   const editorRef = useRef(null)
   const quillRef = useRef(null)
+  const [showModal, setShowModal] = useState(false)
 
   const imageHandler = async () => {
       const uploadImage = async () => {
@@ -25,6 +27,10 @@ function QuillEditor() {
         })
 
         const { data } = await res.json()
+
+        if (!data) {
+          throw new Error('Unable to upload image due to an internal server error!')
+        }
         
         const range = quillRef.current.getSelection()
         quillRef.current.insertEmbed(range.index, 'image', data.imageURL)
@@ -67,6 +73,7 @@ function QuillEditor() {
 
   return(
     <>
+      {showModal ? <ImagePicker /> : ''}
       <div id="quill-editor" ref={editorRef} />
       <button onClick={getContents}> Get editor contents </button>
     </>
