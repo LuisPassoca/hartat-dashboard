@@ -8,15 +8,14 @@ import 'quill-resize-module/dist/resize.css'
 Quill.register('modules/resize', QuillResize)
 
 import './QuillEditor.css'
-import ImagePicker from "./ImagePicker"
 
 function QuillEditor() {
   const editorRef = useRef(null)
   const quillRef = useRef(null)
   const [showModal, setShowModal] = useState(false)
-  const [uploadError, setUploadError] = useState(false)
 
   const imageHandler = async () => {
+      /*
       setUploadError(false)
 
       const uploadImage = async () => {
@@ -45,7 +44,7 @@ function QuillEditor() {
       input.accept = 'image/*'
       input.click() 
 
-      input.addEventListener('change', uploadImage)
+      input.addEventListener('change', uploadImage) */
   }
 
   useEffect(() => {
@@ -77,8 +76,6 @@ function QuillEditor() {
 
   return(
     <>
-      {showModal ? <ImagePicker /> : ''}
-      {uploadError ? <p> Unable to upload image, please try again! </p> : ''}
       <div id="quill-editor" ref={editorRef} />
       <button onClick={getContents}> Get editor contents </button>
     </>

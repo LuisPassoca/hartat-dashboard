@@ -4,6 +4,7 @@ import './App.css'
 import Sidebar from './components/Sidebar'
 import Home from './pages/Home'
 import Editor from './pages/Editor'
+import ImageManager from './components/ImageManager'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
               <Routes> 
                 <Route index element={<Home />} />
                 <Route path='/editor' element={<Editor />} />
+                <Route path='/images' element={<ImageManager />} />
               </Routes>
 
             </div>

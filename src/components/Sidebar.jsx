@@ -4,7 +4,14 @@ function Sidebar() {
 
     return(
         <>
-            <h2> Dashboard </h2>
+            <h2> Hartat <br></br> Dashboard </h2>
+
+            <ul>
+                <li> <a href='/editor'> Postagens </a> </li>
+                <li> Eventos </li>
+                <li> Acervo virtual </li>
+                <li> Programação </li>
+            </ul>
         </>
     )
 }
