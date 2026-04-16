@@ -14,8 +14,11 @@ function QuillEditor() {
   const editorRef = useRef(null)
   const quillRef = useRef(null)
   const [showModal, setShowModal] = useState(false)
+  const [uploadError, setUploadError] = useState(false)
 
   const imageHandler = async () => {
+      setUploadError(false)
+
       const uploadImage = async () => {
         const image = input.files[0]
         const form = new FormData()
@@ -29,7 +32,8 @@ function QuillEditor() {
         const { data } = await res.json()
 
         if (!data) {
-          throw new Error('Unable to upload image due to an internal server error!')
+          setUploadError(true)
+          return
         }
         
         const range = quillRef.current.getSelection()
@@ -74,6 +78,7 @@ function QuillEditor() {
   return(
     <>
       {showModal ? <ImagePicker /> : ''}
+      {uploadError ? <p> Unable to upload image, please try again! </p> : ''}
       <div id="quill-editor" ref={editorRef} />
       <button onClick={getContents}> Get editor contents </button>
     </>
