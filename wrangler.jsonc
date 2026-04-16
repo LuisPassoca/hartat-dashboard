@@ -1,0 +1,20 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "hartat-dashboard",
+	"compatibility_date": "2026-04-13",
+	"pages_build_output_dir": "./dist",
+	"observability": {
+		"enabled": true
+	},
+	"upload_source_maps": true,
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"d1_databases": [
+		{
+			"binding": "db",
+			"database_name": "hartat-dashboard",
+			"database_id": "c9bcb76a-c905-4e39-be8c-ecdb465c7c33"
+		}
+	],
+}
