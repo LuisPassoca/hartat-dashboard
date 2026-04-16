@@ -1,4 +1,4 @@
-import { getImages } from "../../lib/db/images"
+import { getImages, storeImage, uploadImage } from "../../lib/images"
 
 //GET api/images
 export async function onRequestGet({ request, env }) {
@@ -34,10 +34,10 @@ export async function onRequestGet({ request, env }) {
 export async function onRequestPost({ request, env }) {
     try {
         const { db } = env
-        let form
+        let formData
 
         try {
-            form = await request.formData()
+            formData = await request.formData()
         } catch (err) {
             return Response.json(
                 {success: false, message: 'Invalid formData!'}, 
@@ -45,16 +45,33 @@ export async function onRequestPost({ request, env }) {
             )
         }
         
-        const file = form.get('image')
+        const file = formData.get('image')
         if (!file) {
             return Response.json(
                 {success: false, message: 'Image not provided!'}, 
                 {status: 400}
             )
         }
+        
+        const { imageURL } = await uploadImage(formData)
+        const imageName = file.name
 
-        //finish upload code
+        const res = await storeImage(db, { imageName, imageURL })
+        console.log(res)
 
+        if (!res.success) {
+            //Handle image deletion from R2 here
+
+            return Response.json(
+                {success: false, message: 'Internal server error!'}, 
+                {status: 500}
+            )
+        }
+
+        return Response.json(
+            {success: true, message: 'Successfully uploaded image!', data: {imageURL}},
+            {status: 200}
+        )
     } catch(err) {
         console.log(err)
         return Response.json(

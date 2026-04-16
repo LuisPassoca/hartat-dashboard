@@ -15,7 +15,6 @@ function QuillEditor() {
   const [showModal, setShowModal] = useState(false)
 
   const imageHandler = async () => {
-      /*
       setUploadError(false)
 
       const uploadImage = async () => {
@@ -44,7 +43,7 @@ function QuillEditor() {
       input.accept = 'image/*'
       input.click() 
 
-      input.addEventListener('change', uploadImage) */
+      input.addEventListener('change', uploadImage)
   }
 
   useEffect(() => {
