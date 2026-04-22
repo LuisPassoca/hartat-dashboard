@@ -11,13 +11,12 @@ export async function onRequestGet({ request, env }) {
         const limit = Number(params.get('limit')) || 10
         const page = Number(params.get('page')) || 1
         const search = params.get('search')
-
+        
         const offset = (page - 1) * limit
-
-        const { results } = await getImages(db, {limit, offset, search})
+        const { images, pages } = await getImages(db, {limit, offset, search})
 
         return Response.json(
-            {success: true, message: 'Successfully retrieved images!', results}, 
+            {success: true, message: 'Successfully retrieved images!', pages, images}, 
             {status: 200}
         )
 

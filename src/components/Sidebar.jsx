@@ -11,6 +11,7 @@ function Sidebar() {
                 <li> Eventos </li>
                 <li> Acervo virtual </li>
                 <li> Programação </li>
+                <li> <a href='/images'> <i className="fa-solid fa-image"></i> Imagens </a></li>
             </ul>
         </>
     )
