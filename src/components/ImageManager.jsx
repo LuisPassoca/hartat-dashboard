@@ -163,7 +163,11 @@ function ImageManager() {
         const extension = name.slice(name.lastIndexOf('.'))
         const newName = window.prompt('Digite o novo nome da imagem: ') + extension
        
-        //PATCH /api/images?id
+        const res = await fetch(`/api/images?id=${id}&name=${newName}`, {
+            method: 'PATCH'
+        })
+        
+        setForceReload(prev => prev + 1)
     }
 
     const handleDelete = async (id) => {

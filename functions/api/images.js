@@ -1,4 +1,4 @@
-import { getImages, storeImage, uploadImage } from "../../lib/images"
+import { getImages, renameImage, storeImage, uploadImage } from "../../lib/images"
 
 //GET api/images
 export async function onRequestGet({ request, env }) {
@@ -29,7 +29,33 @@ export async function onRequestGet({ request, env }) {
     }
 }
 
+
 //POST api/images
+export async function onRequestPost({ request, env }) {
+    try {
+        const { db } = env
+        let formData
+
+        try {
+            formData = await request.formData()
+        } catch (err) {
+            return Response.json(
+                {success: false, message: 'Invalid formData!'}, 
+                {status: 400}
+            )
+        }
+
+        //TODO: add multiple uploads on backend rather than frontend
+    } catch (err) {
+        console.log(err)
+        return Response.json(
+            {success: false, message: 'Internal server error!'}, 
+            {status: 500}
+        )
+    }
+}
+
+/*
 export async function onRequestPost({ request, env }) {
     try {
         const { db } = env
@@ -56,7 +82,6 @@ export async function onRequestPost({ request, env }) {
         const imageName = file.name
 
         const res = await storeImage(db, { imageName, imageURL })
-        console.log(res)
 
         if (!res.success) {
             //Handle image deletion from R2 here
@@ -78,4 +103,46 @@ export async function onRequestPost({ request, env }) {
             {status: 500}
         )
     }
+}
+*/
+
+//PATCH api/images
+export async function onRequestPatch({ request, env }) {
+    try {
+        const { db } = env
+
+        const url = new URL(request.url)
+        const params = url.searchParams
+
+        const id = params.get('id')
+        const name = params.get('name')
+
+        if (!id || !name) {return Response.json(
+            {success: false, message: 'Request missing parameters!'}, 
+            {status: 400}
+        )}
+
+        const res = await renameImage(db, { id, name })
+
+        if (!res.success) {return Response.json(
+            {success: false, message: 'Internal server error!'}, 
+            {status: 500}
+        )}
+
+        return Response.json(
+            {success: true, message: 'Successfully renamed image!', data: {imageURL}},
+            {status: 200}
+        )
+    } catch (err) {
+        console.log(err)
+        return Response.json(
+            {success: false, message: 'Internal server error!'}, 
+            {status: 500}
+        )
+    }
+}
+
+//DELETE api/images
+export async function onRequestDelete({ request, env }) {
+    
 }
