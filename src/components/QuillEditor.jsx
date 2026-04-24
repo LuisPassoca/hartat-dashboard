@@ -8,12 +8,18 @@ import 'quill-resize-module/dist/resize.css'
 Quill.register('modules/resize', QuillResize)
 
 import './QuillEditor.css'
+import ImageManager from "./ImageManager"
 
 function QuillEditor() {
   const editorRef = useRef(null)
   const quillRef = useRef(null)
   const [showModal, setShowModal] = useState(false)
 
+  const imageHandler = async () => {
+    setShowModal(true)
+  }
+
+  /*
   const imageHandler = async () => {
       setUploadError(false)
 
@@ -45,6 +51,7 @@ function QuillEditor() {
 
       input.addEventListener('change', uploadImage)
   }
+  */
 
   useEffect(() => {
     quillRef.current = new Quill(editorRef.current, {
@@ -73,10 +80,23 @@ function QuillEditor() {
     console.log(quillRef.current.getSemanticHTML())
   }
 
+  const selectFunction = (image) => {
+    const range = quillRef.current.getSelection()
+    quillRef.current.insertEmbed(range.index, 'image', image.url)
+    setShowModal(false)
+  }
+
   return(
     <>
       <div id="quill-editor" ref={editorRef} />
       <button onClick={getContents}> Get editor contents </button>
+      {showModal ? 
+        <div className="modal-background">
+            <div className="modal-display">
+                <ImageManager selectFunction={selectFunction} />
+            </div>
+        </div>
+      : ''}
     </>
   )
 }

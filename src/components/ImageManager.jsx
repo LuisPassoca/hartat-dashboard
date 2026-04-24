@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './ImageManager.css'
 
-function ImageManager() {
+function ImageManager(props) {
     //Handle images
     const [page, setPage] = useState(1)
     const [images, setImages] = useState([])
@@ -176,6 +176,8 @@ function ImageManager() {
         //DELETE /api/images?id
     }
 
+    const handleImageClick = props.selectFunction ? props.selectFunction : (image) => {window.open(image.url, '_blank')}
+
     //testing
     /*
     useEffect(() => {
@@ -246,8 +248,8 @@ function ImageManager() {
                                 </button>
                             </div>
     
-                            <div className='image-overlay'> <p> Visualizar imagem </p> </div>
-                            <img src={image.url} onClick={() => {window.open(image.url, '_blank')}} loading='lazy' />
+                            <div className='image-overlay'> <p> {props.selectFunction ? 'Selecionar imagem' : 'Visualizar imagem'} </p> </div>
+                            <img src={image.url} onClick={() => handleImageClick(image)} loading='lazy' />
                         </div>
 
                         <p className='image-name' title={image.name}> {image.name} </p>

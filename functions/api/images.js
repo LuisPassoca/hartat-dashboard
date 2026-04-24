@@ -31,6 +31,7 @@ export async function onRequestGet({ request, env }) {
 
 
 //POST api/images
+/*
 export async function onRequestPost({ request, env }) {
     try {
         const { db } = env
@@ -55,7 +56,7 @@ export async function onRequestPost({ request, env }) {
     }
 }
 
-/*
+*/
 export async function onRequestPost({ request, env }) {
     try {
         const { db } = env
@@ -104,7 +105,6 @@ export async function onRequestPost({ request, env }) {
         )
     }
 }
-*/
 
 //PATCH api/images
 export async function onRequestPatch({ request, env }) {

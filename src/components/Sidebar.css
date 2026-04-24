@@ -8,7 +8,35 @@
     width: 180px;
     flex-shrink: 0;
 
-    align-items: center;
     padding: 20px 10px;
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        padding: 0;
+
+        list-style: none;
+    }
+
+    li:hover {
+        background-color: #526379;
+    }
+
+    a {
+        color: white !important;
+        text-decoration: none;
+
+        display: flex;
+        gap: 5px;
+        align-items: center;
+
+        width: 100%;
+        padding: 10px 5px;
+
+        border-bottom: 2px solid rgba(255, 255, 255, 0.75);
+        cursor: pointer;
+    }
 }
 
