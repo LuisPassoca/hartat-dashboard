@@ -8,7 +8,17 @@
     width: 180px;
     flex-shrink: 0;
 
-    padding: 20px 10px;
+    padding: 20px 0px;
+
+    h2 {
+        padding: 0 10px;
+    }
+
+    .selected {
+        color: white !important;
+        background-color: #526379;
+        border-bottom: 2px solid white;
+    }
 
     ul {
         display: flex;
@@ -25,7 +35,7 @@
     }
 
     a {
-        color: white !important;
+        color: rgb(185, 185, 185);
         text-decoration: none;
 
         display: flex;
@@ -35,7 +45,7 @@
         width: 100%;
         padding: 10px 5px;
 
-        border-bottom: 2px solid rgba(255, 255, 255, 0.75);
+        border-bottom: 2px solid rgb(185, 185, 185);
         cursor: pointer;
     }
 }

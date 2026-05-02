@@ -1,14 +1,36 @@
+import { useState } from 'react'
 import './Sidebar.css'
+import { NavLink } from 'react-router-dom'
 
-function Sidebar() {
-
+function Sidebar(props) {
     return(
         <>
-            <h2> Hartat <br></br> Dashboard </h2>
+            <h2> 
+                Hartat <br /> 
+                Dashboard 
+            </h2>
 
             <ul>
-                <li> <a href='/editor'> <i class="fa-solid fa-file-lines"></i> Postagens </a> </li>
-                <li> <a href='/images'> <i className="fa-solid fa-image"></i> Imagens </a></li>
+                <li> 
+                    <NavLink to='/posts' className={({isActive}) => isActive && 'selected'}>
+                        <i className="fa-solid fa-file-lines" /> 
+                        Posts 
+                    </NavLink>
+                </li>
+
+                <li> 
+                    <NavLink to='/editor' className={({isActive}) => isActive && 'selected'}>
+                        <i className="fa-solid fa-edit" /> 
+                        Editor 
+                    </NavLink>
+                </li>
+                
+                <li> 
+                    <NavLink to='/images' className={({isActive}) => isActive && 'selected'}>
+                        <i className="fa-solid fa-image" /> 
+                        Images 
+                    </NavLink>
+                </li>
             </ul>
         </>
     )

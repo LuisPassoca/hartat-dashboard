@@ -276,3 +276,9 @@
 
     color: white;
 }
+
+.close-button {
+    position: absolute;
+    align-self: flex-end;
+    cursor: pointer;
+}

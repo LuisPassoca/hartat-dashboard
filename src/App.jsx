@@ -1,10 +1,10 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 
 import Sidebar from './components/Sidebar'
-import Home from './pages/Home'
 import Editor from './pages/Editor'
 import ImageManager from './components/ImageManager'
+import Posts from './pages/Posts'
 
 function App() {
 
@@ -18,8 +18,9 @@ function App() {
             <div className='content'>
 
               <Routes> 
-                <Route index element={<Home />} />
-                <Route path='/editor' element={<Editor />} />
+                <Route index element={<Navigate to='/posts' replace />} />
+                <Route path='/posts' element={<Posts />} />
+                <Route path='/editor/:post?' element={<Editor />} />
                 <Route path='/images' element={<ImageManager />} />
               </Routes>
 

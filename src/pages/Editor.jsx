@@ -1,10 +1,10 @@
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import QuillEditor from "../components/QuillEditor";
 import './Editor.css'
 
 function Editor() {
-    const [searchParams] = useSearchParams()
-    console.log(searchParams.get('mode'))
+    const { post } = useParams()
+    console.log(post)
 
     const checkEmpty = (e) => {
         const empty = !(e.target.innerText.trim())

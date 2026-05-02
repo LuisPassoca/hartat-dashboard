@@ -193,6 +193,7 @@ function ImageManager(props) {
             }
 
             <h1> Minhas Imagens </h1>
+            {props.closeModal && <i className="fa-solid fa-x close-button" onClick={props.closeModal}/>}
 
             <div className='flex-row-wrapper'>
                 <div className='search-bar'>

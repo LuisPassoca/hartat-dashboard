@@ -16,42 +16,9 @@ function QuillEditor() {
   const [showModal, setShowModal] = useState(false)
 
   const imageHandler = async () => {
+    document.activeElement.blur()
     setShowModal(true)
   }
-
-  /*
-  const imageHandler = async () => {
-      setUploadError(false)
-
-      const uploadImage = async () => {
-        const image = input.files[0]
-        const form = new FormData()
-        form.append('image', image)
-
-        const res = await fetch('/api/upload-image', {
-          method: 'POST',
-          body: form,
-        })
-
-        const { data } = await res.json()
-
-        if (!data) {
-          setUploadError(true)
-          return
-        }
-        
-        const range = quillRef.current.getSelection()
-        quillRef.current.insertEmbed(range.index, 'image', data.imageURL)
-      }
-
-      const input = document.createElement('input')
-      input.type = 'file'
-      input.accept = 'image/*'
-      input.click() 
-
-      input.addEventListener('change', uploadImage)
-  }
-  */
 
   useEffect(() => {
     quillRef.current = new Quill(editorRef.current, {
@@ -90,13 +57,16 @@ function QuillEditor() {
     <>
       <div id="quill-editor" ref={editorRef} />
       <button onClick={getContents}> Get editor contents </button>
-      {showModal ? 
+      {showModal && 
         <div className="modal-background">
             <div className="modal-display">
-                <ImageManager selectFunction={selectFunction} />
+                <ImageManager 
+                  selectFunction={selectFunction} 
+                  closeModal={() => setShowModal(false)} 
+                />
             </div>
         </div>
-      : ''}
+      }
     </>
   )
 }
