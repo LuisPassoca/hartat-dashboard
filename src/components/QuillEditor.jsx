@@ -55,7 +55,10 @@ function QuillEditor() {
 
   return(
     <>
-      <div id="quill-editor" ref={editorRef} />
+      <div className="quill-wrapper">
+        <div ref={editorRef} />
+      </div>
+
       <button onClick={getContents}> Get editor contents </button>
       {showModal && 
         <div className="modal-background">
