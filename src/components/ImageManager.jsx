@@ -137,19 +137,23 @@ function ImageManager(props) {
     }
 
     //Handle image options
-    const handleDownload = async (name, url) => {
+    const handleDownload = async (name, extension, url) => {
         const file = await fetch(url)
         const blob = await file.blob()
         const blobURL = URL.createObjectURL(blob)
 
         const a = document.createElement('a')
         a.href = blobURL
-        a.download = name
+        a.download = name + extension
         a.click()
     }
 
     const handleRename = async (uuid, currentName) => {
         const name = window.prompt('Please type the new image name:', currentName)
+        if (!name) {
+            window.alert('Please input a name!')
+            return
+        }
 
         const res = await fetch(`/api/images/${uuid}?name=${name}`, {
             method: 'PATCH'
@@ -184,7 +188,8 @@ function ImageManager(props) {
         props.selectFunction : 
         (image) => {window.open(image.url, '_blank')}
 
-    return(
+    //Separates component content to allow for modal display
+    const content = (
         <div className='image-manager'>
             { isUploading && 
                 <div className='spinner-overlay'>
@@ -242,7 +247,7 @@ function ImageManager(props) {
 
                             <div className='image-container'>
                                 <div className='image-options'>
-                                    <button onClick={() => {handleDownload(image.name, image.url)}}>
+                                    <button onClick={() => {handleDownload(image.name, image.extension, image.url)}}>
                                         <i className="fa-solid fa-download"></i>
                                     </button>
 
@@ -259,7 +264,7 @@ function ImageManager(props) {
                                     <p> {props.selectFunction ? 'Selecionar imagem' : 'Visualizar imagem'} </p> 
                                 </div>
 
-                                <img src={image.url} onClick={() => handleImageClick(image)} loading='lazy' />
+                                <img src={image.url} onClick={() => handleImageClick(image)} loading='lazy' draggable='false' />
                             </div>
 
                             <p className='image-name' title={image.name + image.extension} onClick={() => handleImageClick(image)}> 
@@ -301,6 +306,20 @@ function ImageManager(props) {
                 </div>
             </div>
         </div>
+    )
+
+    return(
+        <>
+            {props.modal ? 
+                <div className="modal-background">
+                    <div className="modal-display">
+                        {content}
+                    </div>
+                </div> 
+                : 
+                content
+            }
+        </>
     )
 }
 

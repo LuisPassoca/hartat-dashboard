@@ -10,7 +10,7 @@ Quill.register('modules/resize', QuillResize)
 import './QuillEditor.css'
 import ImageManager from "./ImageManager"
 
-function QuillEditor() {
+function QuillEditor(props) {
   const editorRef = useRef(null)
   const quillRef = useRef(null)
   const [showModal, setShowModal] = useState(false)
@@ -22,7 +22,7 @@ function QuillEditor() {
 
   useEffect(() => {
     quillRef.current = new Quill(editorRef.current, {
-      placeholder: "Conteúdo da postagem",
+      placeholder: "Type your post...",
       theme: "snow",
       modules: {
         toolbar: {
@@ -41,6 +41,9 @@ function QuillEditor() {
         }
       }
     })
+
+    //Not ideal, but passes the function to the parent
+    props.setQuillContent(() => () => quillRef.current.getSemanticHTML())
   }, [])
 
   const getContents = () => {
@@ -59,16 +62,12 @@ function QuillEditor() {
         <div ref={editorRef} />
       </div>
 
-      <button onClick={getContents}> Get editor contents </button>
       {showModal && 
-        <div className="modal-background">
-            <div className="modal-display">
-                <ImageManager 
-                  selectFunction={selectFunction} 
-                  closeModal={() => setShowModal(false)} 
-                />
-            </div>
-        </div>
+        <ImageManager 
+          selectFunction={selectFunction} 
+          closeModal={() => setShowModal(false)} 
+          modal
+        />
       }
     </>
   )

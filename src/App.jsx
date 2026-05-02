@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar'
 import Editor from './pages/Editor'
 import ImageManager from './components/ImageManager'
 import Posts from './pages/Posts'
+import PostReader from './pages/PostReader'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
               <Routes> 
                 <Route index element={<Navigate to='/posts' replace />} />
                 <Route path='/posts' element={<Posts />} />
+                <Route path='/posts/:post' element={<PostReader />} />
                 <Route path='/editor/:post?' element={<Editor />} />
                 <Route path='/images' element={<ImageManager />} />
               </Routes>

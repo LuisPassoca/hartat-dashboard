@@ -5,4 +5,13 @@ CREATE TABLE images(
     extension TEXT NOT NULL,
     uuid TEXT NOT NULL,
     uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS posts;
+CREATE TABLE posts(
+    id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    html TEXT NOT NULL,
+    cover_image TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )
