@@ -38,7 +38,6 @@
 }
 
 .images-display {
-    display: flex;
     position: relative;
 
     width: 100%;
@@ -47,7 +46,7 @@
     height: 100%;
     min-height: 0;
 
-    background-color: rgb(190, 190, 190);
+    background-color: rgb(218, 218, 218);
 }
 
 
@@ -57,7 +56,7 @@
     gap: 20px;
 
     justify-content: center;
-
+    flex-wrap: wrap;
 }
 
 .button-group {
@@ -80,7 +79,7 @@
     
     button:disabled {
         
-        color: rgb(133, 133, 133);
+        color: rgb(168, 168, 168);
         text-decoration: none;
         cursor: auto;
     }
@@ -88,6 +87,15 @@
     .selected-button {
         color: rgb(29, 29, 29);
     }
+}
+
+.display-drop-wrapper {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    min-height: 0;
+    flex: 1;
 }
 
 .images-display {
@@ -111,6 +119,7 @@
 
         button {
             aspect-ratio: 1/1;
+            cursor: pointer;
         }
     }
 
@@ -119,6 +128,7 @@
         width: 100%;
         aspect-ratio: 1/1;
         overflow: hidden;
+        cursor: pointer;
 
         img {
             width: 100%;
@@ -153,7 +163,7 @@
         opacity: 1;
     }
 
-    p {
+    .image-name {
         margin: 5px 0;
         
         display: -webkit-box;
@@ -162,6 +172,12 @@
         -webkit-box-orient: vertical;
         overflow: hidden;       
         overflow-wrap: break-word; 
+
+        cursor: pointer;
+    }
+    
+    .image-name:hover {
+        color: rgb(100, 100, 100);
     }
 
 }

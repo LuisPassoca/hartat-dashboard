@@ -8,7 +8,7 @@ function ImageManager(props) {
     const [search, setSearch] = useState('')
     const [debouncedSearch, setDebouncedSearch] = useState(0)
     const [forceReload, setForceReload] = useState(0)
-    const limit = 30
+    const limit = 50
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -61,45 +61,46 @@ function ImageManager(props) {
 
     const handleUpload = async (files) => {
         setIsUploading(true)
-        try {
-            const uploadedImagesData = []
-            const uploadError = () => {
-                const err = new Error ('Internal server error: Unable to upload images!')
-                err.uploadedImagesData = uploadedImagesData
-                throw err
+        
+        const invalidFiles = []
+        const images = new FormData()
+
+        for (const file of files) {
+            if (!file.type.startsWith('image/')) {
+                invalidFiles.push(file)
+                continue
             }
 
-            const uploadImage = async (image) => {
-                const form = new FormData()
-                form.append('image', image)
-
-                const res = await fetch('/api/images', {
-                    method: 'POST',
-                    body: form,
-                })
-                if (!res.ok) {uploadError()}
-
-                const { data } = await res.json()
-                if (!data) {uploadError()}
-
-                uploadedImagesData.push(data)
-            }
-
-            if (files.length == 0) {return}
-
-            for(let i = 0; i < files.length; i++) {
-                await uploadImage(files[i])
-            }
-
-            setForceReload(prev => prev + 1)
-        } catch(err) {
-            console.log(err)
-            window.alert('Não foi possível fazer o envio das imagens!')
-            //Handle image cleanup
-
-        } finally {
-            setIsUploading(false)
+            images.append('image', file)
         }
+
+        if (images.getAll('image').length == 0) {
+            window.alert('No image files were provided!')
+            setIsUploading(false)
+            return
+        }
+
+        const res = await fetch('/api/images', {
+            body: images,
+            method: 'POST'
+        })
+
+        const data = await res.json()
+
+        if (data.partial) {
+            window.alert('Some files could not be uploaded!')
+        }
+
+        if (!data.success) {
+            window.alert('An error occurred, please try again!')
+        }
+
+        if (invalidFiles.length > 0) {
+            window.alert(`${invalidFiles.length} files were ignored as they were not images!`)
+        }
+
+        setIsUploading(false)
+        setForceReload(prev => prev + 1)
     }
 
     //Handle dragging files in
@@ -127,24 +128,12 @@ function ImageManager(props) {
     const handleDrop = async (e) => {
         if (!e.dataTransfer.types.includes('Files')) return
 
-        try {
-            e.preventDefault()
-            dragCounter.current = 0
-            setIsDragging(false)
+        e.preventDefault()
+        dragCounter.current = 0
+        setIsDragging(false)
 
-            const files = e.dataTransfer.files
-            
-            for (let i = 0; i < files.length; i++) {
-                if (!files[i].type.startsWith('image/')) {
-                    throw new Error('Invalid file types provided!')
-                }
-            }
-
-            await handleUpload(files)
-        } catch (err) {
-            console.log(err)
-            window.alert('Os tipos de arquivo enviados são inválidos!')
-        }
+        const files = e.dataTransfer.files
+        handleUpload(files)
     }
 
     //Handle image options
@@ -159,37 +148,41 @@ function ImageManager(props) {
         a.click()
     }
 
-    const handleRename = async (id, name) => {
-        const extension = name.slice(name.lastIndexOf('.'))
-        const newName = window.prompt('Digite o novo nome da imagem: ') + extension
-       
-        const res = await fetch(`/api/images?id=${id}&name=${newName}`, {
+    const handleRename = async (uuid, currentName) => {
+        const name = window.prompt('Please type the new image name:', currentName)
+
+        const res = await fetch(`/api/images/${uuid}?name=${name}`, {
             method: 'PATCH'
         })
+
+        if (!res.ok) {
+            window.alert('An error occurred, please try again!')
+            return
+        }
         
         setForceReload(prev => prev + 1)
     }
 
-    const handleDelete = async (id) => {
-        if(!window.confirm('Tem certeza que deseja excluir a imagem?\nEssa ação é permanente.')) return
+    const handleDelete = async (uuid) => {
+        const confirm = window.confirm('Delete this image?')
+        if(!confirm) return
 
-        //DELETE /api/images?id
+        const res = await fetch(`/api/images/${uuid}`, {
+            method: 'DELETE'
+        })
+
+        if (!res.ok) {
+            window.alert('An error occurred, please try again!')
+            return
+        }
+
+        setForceReload(prev => prev + 1)
     }
 
-    const handleImageClick = props.selectFunction ? props.selectFunction : (image) => {window.open(image.url, '_blank')}
-
-    //testing
-    /*
-    useEffect(() => {
-        const fakeImages = Array.from({ length: 50 }, (_, i) => ({
-            id: i + 1,
-            name: `image_${i + 1}.jpg`,
-            url: `https://picsum.photos/seed/${i + 1}/400/300`
-        }))
-
-        setImages(fakeImages)
-        setTotalPages(5) // adjust based on your limit
-    }, [])*/
+    const handleImageClick = 
+        props.selectFunction ? 
+        props.selectFunction : 
+        (image) => {window.open(image.url, '_blank')}
 
     return(
         <div className='image-manager'>
@@ -203,18 +196,30 @@ function ImageManager(props) {
 
             <div className='flex-row-wrapper'>
                 <div className='search-bar'>
-                    <input type='text' placeholder='Buscar imagens...' onChange={({ target }) => setSearch(target.value)} />
-                    <i className="fa-solid fa-magnifying-glass"></i>
+                    <input 
+                        type='text' 
+                        placeholder='Buscar imagens...' 
+                        onChange={({ target }) => setSearch(target.value)} 
+                    />
+                    <i className="fa-solid fa-magnifying-glass" />
                 </div>
 
                 <label className='upload-file-button' htmlFor='file-input'> 
-                    <i className="fa-solid fa-cloud-arrow-up"></i>
+                    <i className="fa-solid fa-cloud-arrow-up" />
                     Enviar imagem 
                 </label>
-                <input type='file' className='hidden-file-input' id='file-input' accept='image/*' multiple onChange={(e) => handleUpload(e.target.files)}></input>
+
+                <input 
+                    type='file' 
+                    className='hidden-file-input' 
+                    id='file-input' 
+                    accept='image/*' 
+                    multiple 
+                    onChange={(e) => handleUpload(e.target.files)} 
+                />
             </div>
             
-            <div className='images-display'
+            <div className='display-drop-wrapper'
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -229,32 +234,39 @@ function ImageManager(props) {
                     </div>
                 }
 
-                {images.map(
-                    image => 
-                    <div className='image-wrapper' key={image.id}>
+                <div className='images-display'>         
+                    {images.map(
+                        image => 
+                        <div className='image-wrapper' key={image.id}>
 
-                        <div className='image-container'>
-                            <div className='image-options'>
-                                <button onClick={() => {handleDownload(image.name, image.url)}}>
-                                    <i className="fa-solid fa-download"></i>
-                                </button>
+                            <div className='image-container'>
+                                <div className='image-options'>
+                                    <button onClick={() => {handleDownload(image.name, image.url)}}>
+                                        <i className="fa-solid fa-download"></i>
+                                    </button>
 
-                                <button onClick={() => {handleRename(image.id, image.name)}}>
-                                    <i className="fa-solid fa-pen-to-square"></i>
-                                </button>
+                                    <button onClick={() => {handleRename(image.uuid, image.name)}}>
+                                        <i className="fa-solid fa-pen-to-square"></i>
+                                    </button>
 
-                                <button onClick={() => {handleDelete(image.id)}}>
-                                    <i className="fa-solid fa-trash"></i>
-                                </button>
+                                    <button onClick={() => {handleDelete(image.uuid)}}>
+                                        <i className="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+        
+                                <div className='image-overlay'> 
+                                    <p> {props.selectFunction ? 'Selecionar imagem' : 'Visualizar imagem'} </p> 
+                                </div>
+
+                                <img src={image.url} onClick={() => handleImageClick(image)} loading='lazy' />
                             </div>
-    
-                            <div className='image-overlay'> <p> {props.selectFunction ? 'Selecionar imagem' : 'Visualizar imagem'} </p> </div>
-                            <img src={image.url} onClick={() => handleImageClick(image)} loading='lazy' />
-                        </div>
 
-                        <p className='image-name' title={image.name}> {image.name} </p>
-                    </div>
-                )}
+                            <p className='image-name' title={image.name + image.extension} onClick={() => handleImageClick(image)}> 
+                                {image.name + image.extension} 
+                            </p>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className='page-navigation'>
@@ -278,8 +290,13 @@ function ImageManager(props) {
                 </div>
 
                 <div className='button-group'>
-                    <button onClick={handleNextPage} disabled={page == totalPages}> {'Próximo >'} </button>
-                    <button onClick={handleNextGroup} disabled={pageGroupStart + pagesPerGroup > totalPages}> {'>>'} </button>
+                    <button onClick={handleNextPage} disabled={page == totalPages}> 
+                        {'Próximo >'} 
+                    </button>
+
+                    <button onClick={handleNextGroup} disabled={pageGroupStart + pagesPerGroup > totalPages}> 
+                        {'>>'} 
+                    </button>
                 </div>
             </div>
         </div>

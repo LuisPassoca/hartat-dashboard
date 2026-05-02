@@ -17,4 +17,10 @@
 			"database_id": "c9bcb76a-c905-4e39-be8c-ecdb465c7c33"
 		}
 	],
+	"r2_buckets": [
+		{
+			"binding": "bucket",
+			"bucket_name": "hartat-bucket"
+		}
+	]
 }

@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS images;
 CREATE TABLE images(
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    url TEXT NOT NULL,
+    extension TEXT NOT NULL,
+    uuid TEXT NOT NULL,
     uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )
