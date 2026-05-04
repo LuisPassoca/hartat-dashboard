@@ -58,10 +58,11 @@ export async function onRequestPost({ request, env }) {
             )
         }
 
+        const thumbnails = formData.getAll('thumbnail')
         const url = new URL(request.url)
         const origin = url.origin
 
-        const { uploadedFiles, errorFiles } = await uploadImages({ images, bucket, db, origin })
+        const { uploadedFiles, errorFiles } = await uploadImages({ images, thumbnails, bucket, db, origin })
 
         if (uploadedFiles.length == 0) {
             return Response.json(

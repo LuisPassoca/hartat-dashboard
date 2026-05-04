@@ -66,7 +66,7 @@ function ImageGrid({ images, onClick, onRename, onDownload, onDelete, allowSelec
                         }
 
                         <img
-                            src={image.url}
+                            src={image.url + '?preview'}
                             draggable={false}
                             loading='lazy'
                         />

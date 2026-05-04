@@ -135,6 +135,33 @@ function ImageManager({ modal, closeModal, onPick, allowSelection }) {
         }
     }
 
+    const generateThumbnail = (file) => {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        
+        const image = new Image()
+        image.src = URL.createObjectURL(file)
+
+        return new Promise((res) => {
+            image.onload = () => {
+                const ratio = image.width / image.height
+                const targetHeight = 100
+                const targetWidth = targetHeight * ratio
+
+                canvas.width = targetWidth
+                canvas.height = targetHeight
+
+                ctx.drawImage(image, 0, 0, targetWidth, targetHeight)
+
+                canvas.toBlob((blob) => {
+                    console.log(URL.createObjectURL(blob))
+                    res(new File([blob], file.name))
+                }, 'image/webp', 80)
+            }
+        })
+
+    }
+
     const handleUpload = async (files) => {
         setIsLoading(true)
         
@@ -147,7 +174,10 @@ function ImageManager({ modal, closeModal, onPick, allowSelection }) {
                 continue
             }
 
+            const thumbnail = await generateThumbnail(file)
+
             images.append('image', file)
+            images.append('thumbnail', thumbnail)
         }
 
         if (images.getAll('image').length == 0) {
