@@ -1,0 +1,159 @@
+.close-button {
+    position: absolute;
+    align-self: flex-end;
+    cursor: pointer;
+}
+
+.flex-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    width: 100%;
+    gap: 10px;
+}
+
+.bulk-operations {
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 5px;
+    min-height: 30px;
+
+    input[type='checkbox'] {
+        transform: scale(1.25);
+    }
+
+    button {
+        padding: 5px 10px;
+        margin-right: 5px;
+    }
+
+    * {
+        cursor: pointer;
+    }
+}
+
+.searchbar {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    flex: 1;
+
+    input {
+        flex: 1;
+        min-width: 0;
+
+        border-radius: 50px;
+        border: 2px solid rgb(64, 64, 64);
+        padding: 10px 10px;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    i {
+        position: absolute;
+        right: 10px;
+        pointer-events: none;
+    }
+}
+
+.hidden-file-input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+}
+
+.upload-file-button {
+    background-color: rgb(54, 113, 201);
+    color: white;
+
+    justify-content: center;
+    align-items: center;
+
+    display: inline-flex;
+    gap: 10px;
+
+    padding: 10px;
+    border-radius: 10px;
+
+    cursor: pointer;
+    width: fit-content;
+    flex-shrink: 0;
+}
+
+.upload-file-button:hover {
+    background-color: rgb(37, 96, 184);
+}
+
+.loading-spinner {
+    display: flex;
+    position: absolute;
+
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    top: 0;
+    left: 0;
+
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.loading-spinner::after {
+    content: '';
+
+    width: 64px;
+    height: 64px;
+    
+    border-radius: 50%;
+    border: 5px solid rgb(156, 156, 156);
+    border-top: 5px solid white;
+
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { 
+        transform: rotate(360deg);
+    }
+}
+
+.modal-backdrop {
+    position: fixed;
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    top: 0;
+    left: 0;
+    
+    background-color: rgba(0, 0, 0, 0.25);
+
+    z-index: 5;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    width: 70%;
+    height: 70%;
+
+    z-index: 6;
+}

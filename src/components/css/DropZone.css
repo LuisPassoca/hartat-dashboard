@@ -1,0 +1,39 @@
+.file-drop-wrapper {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    min-height: 0;
+    flex: 1;
+}
+
+.file-drop-overlay {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.555);
+
+    left: 0;
+    top: 0;
+    z-index: 9;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.file-drop {
+    width: calc(100% - 50px);
+    height: calc(100% - 50px);
+
+    border-radius: 25px;
+    border: 5px dashed rgb(207, 207, 207);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+}

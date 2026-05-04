@@ -1,27 +1,41 @@
-import { useEffect, useRef, useState } from 'react'
-import './ImageManager.css'
+import { useEffect, useState } from 'react'
+import './css/ImageManager.css'
+import ImageGrid from './ImageGrid'
+import DropZone from './DropZone'
+import Pagination from './Pagination'
 
-function ImageManager(props) {
-    //Handle images
-    const [page, setPage] = useState(1)
+function ImageManager({ modal, closeModal, onPick, allowSelection }) {
     const [images, setImages] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
+    const [forceReload, setForceReload] = useState(false)
+
+    const [page, setPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
+    const limit = 30
+
+    const [selectionMode, setSelectionMode] = useState(false)
+    const [selectedImages, setSelectedImages] = useState(new Map())
+    
     const [search, setSearch] = useState('')
-    const [debouncedSearch, setDebouncedSearch] = useState(0)
-    const [forceReload, setForceReload] = useState(0)
-    const limit = 50
+    const [debouncedSearch, setDebouncedSearch] = useState('')
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            setDebouncedSearch(search)
-        }, 500)
+        const debounceTime = 500
+        const t = setTimeout(() => {
+            setDebouncedSearch(prev => {
+                if (prev == search) {return prev}
+                return search
+            })
+        }, debounceTime)
 
-        return () => clearTimeout(timeout)
+        return () => clearTimeout(t)
     }, [search])
 
     useEffect(() => {
         setPage(1)
     }, [debouncedSearch])
-
+    
+    //Load images
     useEffect(() => {
         const loadImages = async () => {
             const res = await fetch(
@@ -37,30 +51,92 @@ function ImageManager(props) {
         loadImages()
     }, [page, debouncedSearch, forceReload])
 
-    
-    //Handle pagination
-    const [totalPages, setTotalPages] = useState(1)
+    //Handlers
+    const handleDownload = async (image) => {
+        const file = await fetch(image.url)
+        const blob = await file.blob()
+        const blobUrl = URL.createObjectURL(blob)
 
-    const pagesPerGroup = 10
-    const pageGroup = Math.floor((page - 1) / pagesPerGroup)
+        const a = document.createElement('a')
+        a.href = blobUrl
+        a.download = image.name + image.extension
+        a.click()
+        URL.revokeObjectURL(blobUrl)
+    }
 
-    const pageGroupStart = pageGroup * pagesPerGroup + 1
-    const pageGroupEnd = pageGroupStart + pagesPerGroup - 1
+    const handleMultipleDownloads = async () => {
+        for (const image of selectedImages) {
+            await handleDownload(image[1])
+        }
+    }
 
-    const pageNumbers = []
-    for(let i = pageGroupStart; i <= pageGroupEnd; i++) {pageNumbers.push(i)}
+    const handlePick = (image) => {
+        if (modal) {
+            onPick?.([image])
+            closeModal?.()
+            return
+        }
 
-    const handlePrevGroup = () => {setPage(Math.max((pageGroupStart - pagesPerGroup), 1))}
-    const handleNextGroup = () => {setPage(Math.min((pageGroupStart + pagesPerGroup), totalPages))}
+        window.open(image.url, '_blank')
+    }
 
-    const handlePrevPage = () => {setPage(Math.max((page - 1), 1))}
-    const handleNextPage = () => {setPage(Math.min((page + 1), totalPages))}
+    const handleMultiplePick = () => {
+        const images = Array.from(selectedImages.values())
+        onPick?.(images)
+        closeModal?.()
+        return
+    }
 
-    //Handle image uploads
-    const [isUploading, setIsUploading] = useState(false)
+    const handleRename = async (image) => {
+        const rename = window.prompt('Please enter the new image name:', image.name)
+
+        if (!rename) {
+            window.alert('Please enter a name!')
+            return
+        }
+
+        const res = await fetch(`/api/images/${image.uuid}?name=${rename}`, {
+            method: 'PATCH'
+        })
+
+        if (!res.ok) {
+            window.alert('An error has occured!')
+            return
+        }
+
+        setForceReload(prev => !prev)
+    }
+
+    const handleDelete = async (image, multiple) => {
+        if (!multiple) {
+            const confirm = window.confirm('Delete this image?')
+            if(!confirm) return
+        }
+
+        const res = await fetch(`/api/images/${image.uuid}`, {
+            method: 'DELETE'
+        })
+
+        if (!res.ok) {
+            window.alert('An error occurred!')
+            return
+        }
+
+        setForceReload(prev => prev + 1)
+    }
+
+    const handleMultipleDeletes = async () => {
+        const confirm = window.confirm('Delete ALL selected images?')
+        if(!confirm) return
+
+        const images = Array.from(selectedImages.values())
+        for (const image of images) {
+            await handleDelete(image, true)
+        }
+    }
 
     const handleUpload = async (files) => {
-        setIsUploading(true)
+        setIsLoading(true)
         
         const invalidFiles = []
         const images = new FormData()
@@ -76,7 +152,7 @@ function ImageManager(props) {
 
         if (images.getAll('image').length == 0) {
             window.alert('No image files were provided!')
-            setIsUploading(false)
+            setIsLoading(false)
             return
         }
 
@@ -99,120 +175,30 @@ function ImageManager(props) {
             window.alert(`${invalidFiles.length} files were ignored as they were not images!`)
         }
 
-        setIsUploading(false)
+        setIsLoading(false)
         setForceReload(prev => prev + 1)
     }
 
-    //Handle dragging files in
-    const [isDragging, setIsDragging] = useState(false)
-    const dragCounter = useRef(0)
-
-    const handleDragEnter = (e) => {
-        e.preventDefault()
-        if (!e.dataTransfer.types.includes('Files')) return
-
-        dragCounter.current++
-        setIsDragging(true)
-    }
-
-    const handleDragLeave = (e) => {
-        e.preventDefault()
-        if (!e.dataTransfer.types.includes('Files')) return
-        dragCounter.current--
-
-        if (dragCounter.current == 0) {
-            setIsDragging(false)
-        }
-    }
-
-    const handleDrop = async (e) => {
-        if (!e.dataTransfer.types.includes('Files')) return
-
-        e.preventDefault()
-        dragCounter.current = 0
-        setIsDragging(false)
-
-        const files = e.dataTransfer.files
-        handleUpload(files)
-    }
-
-    //Handle image options
-    const handleDownload = async (name, extension, url) => {
-        const file = await fetch(url)
-        const blob = await file.blob()
-        const blobURL = URL.createObjectURL(blob)
-
-        const a = document.createElement('a')
-        a.href = blobURL
-        a.download = name + extension
-        a.click()
-    }
-
-    const handleRename = async (uuid, currentName) => {
-        const name = window.prompt('Please type the new image name:', currentName)
-        if (!name) {
-            window.alert('Please input a name!')
-            return
-        }
-
-        const res = await fetch(`/api/images/${uuid}?name=${name}`, {
-            method: 'PATCH'
-        })
-
-        if (!res.ok) {
-            window.alert('An error occurred, please try again!')
-            return
-        }
-        
-        setForceReload(prev => prev + 1)
-    }
-
-    const handleDelete = async (uuid) => {
-        const confirm = window.confirm('Delete this image?')
-        if(!confirm) return
-
-        const res = await fetch(`/api/images/${uuid}`, {
-            method: 'DELETE'
-        })
-
-        if (!res.ok) {
-            window.alert('An error occurred, please try again!')
-            return
-        }
-
-        setForceReload(prev => prev + 1)
-    }
-
-    const handleImageClick = 
-        props.selectFunction ? 
-        props.selectFunction : 
-        (image) => {window.open(image.url, '_blank')}
-
-    //Separates component content to allow for modal display
     const content = (
-        <div className='image-manager'>
-            { isUploading && 
-                <div className='spinner-overlay'>
-                    <div className='spinner' />
-                </div>
-            }
+        <>
+            {isLoading && <div className='loading-spinner' />}
+        
+            <h1> My Images </h1>
+            {modal && <i className="fa-solid fa-x close-button" onClick={() => closeModal()}/>}
 
-            <h1> Minhas Imagens </h1>
-            {props.closeModal && <i className="fa-solid fa-x close-button" onClick={props.closeModal}/>}
-
-            <div className='flex-row-wrapper'>
-                <div className='search-bar'>
+            <div className='flex-row'>
+                <div className='searchbar'>
                     <input 
                         type='text' 
-                        placeholder='Buscar imagens...' 
-                        onChange={({ target }) => setSearch(target.value)} 
+                        placeholder='Search for images...' 
+                        onChange={({ target: { value } }) => {setSearch(value)}} 
                     />
                     <i className="fa-solid fa-magnifying-glass" />
                 </div>
 
                 <label className='upload-file-button' htmlFor='file-input'> 
                     <i className="fa-solid fa-cloud-arrow-up" />
-                    Enviar imagem 
+                    Upload image 
                 </label>
 
                 <input 
@@ -224,99 +210,72 @@ function ImageManager(props) {
                     onChange={(e) => handleUpload(e.target.files)} 
                 />
             </div>
-            
-            <div className='display-drop-wrapper'
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onDragOver={(e) => e.preventDefault()}
+
+            {allowSelection &&
+                <div className='flex-row bulk-operations'>
+                    {selectionMode &&
+                        <>
+                            {modal &&
+                                <button onClick={handleMultiplePick}> 
+                                    <i className="fa-solid fa-check" /> 
+                                    Confirm Selection
+                                </button>
+                            }
+                            
+                            <button onClick={handleMultipleDownloads}> 
+                                <i className="fa-solid fa-download" />  
+                                Download All 
+                            </button>
+
+                            <button onClick={handleMultipleDeletes}> 
+                                <i className="fa-solid fa-trash" /> 
+                                Delete All 
+                            </button>
+                        </>
+                    }
+
+
+                        <label htmlFor='selection-mode-checkbox'> Select multiple: </label>
+                        <input 
+                            id='selection-mode-checkbox' 
+                            type='checkbox' 
+                            onChange={(e) => {setSelectionMode(e.target.checked)}}
+                        />
+
+                </div>
+            }
+
+            <DropZone
+                onDrop={handleUpload}
             >
-                { isDragging &&
-                    <div className='file-drop-overlay'>
-                        <div className='file-drop'>
-                            <i className="fa-solid fa-cloud-arrow-up fa-4x"></i>
-                            <p> Arraste arquivos para enviar </p>
-                        </div>
-                    </div>
-                }
+                <ImageGrid 
+                    images={images}
+                    allowSelection={selectionMode}
+                    onSelectionChange={setSelectedImages}
+                    onClick={handlePick}
+                    onDownload={handleDownload}
+                    onRename={handleRename}
+                    onDelete={handleDelete}
+                />
+            </DropZone>
 
-                <div className='images-display'>         
-                    {images.map(
-                        image => 
-                        <div className='image-wrapper' key={image.id}>
+            <Pagination 
+                page={page}
+                totalPages={totalPages}
+                onChange={setPage}
+            />
 
-                            <div className='image-container'>
-                                <div className='image-options'>
-                                    <button onClick={() => {handleDownload(image.name, image.extension, image.url)}}>
-                                        <i className="fa-solid fa-download"></i>
-                                    </button>
-
-                                    <button onClick={() => {handleRename(image.uuid, image.name)}}>
-                                        <i className="fa-solid fa-pen-to-square"></i>
-                                    </button>
-
-                                    <button onClick={() => {handleDelete(image.uuid)}}>
-                                        <i className="fa-solid fa-trash"></i>
-                                    </button>
-                                </div>
-        
-                                <div className='image-overlay'> 
-                                    <p> {props.selectFunction ? 'Selecionar imagem' : 'Visualizar imagem'} </p> 
-                                </div>
-
-                                <img src={image.url} onClick={() => handleImageClick(image)} loading='lazy' draggable='false' />
-                            </div>
-
-                            <p className='image-name' title={image.name + image.extension} onClick={() => handleImageClick(image)}> 
-                                {image.name + image.extension} 
-                            </p>
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            <div className='page-navigation'>
-                <div className='button-group'>
-                    <button onClick={handlePrevGroup} disabled={page == 1}> {'<<'} </button>
-                    <button onClick={handlePrevPage} disabled={page == 1}> {'< Anterior'} </button>
-                </div>
-                
-                <div className='button-group'>
-                    {pageNumbers.map(
-                        number => 
-                        <button 
-                            key={number} 
-                            className={number == page ? 'selected-button' : ''} 
-                            onClick={() => {setPage(number)}} 
-                            disabled={number > totalPages}
-                        > 
-                            {number} 
-                        </button>
-                    )}
-                </div>
-
-                <div className='button-group'>
-                    <button onClick={handleNextPage} disabled={page == totalPages}> 
-                        {'Próximo >'} 
-                    </button>
-
-                    <button onClick={handleNextGroup} disabled={pageGroupStart + pagesPerGroup > totalPages}> 
-                        {'>>'} 
-                    </button>
-                </div>
-            </div>
-        </div>
-    )
+        </>
+    )       
 
     return(
         <>
-            {props.modal ? 
-                <div className="modal-background">
-                    <div className="modal-display">
+            {modal ?
+                <div className='modal-backdrop'>
+                    <div className='modal-content'>
                         {content}
                     </div>
-                </div> 
-                : 
+                </div> :
                 content
             }
         </>

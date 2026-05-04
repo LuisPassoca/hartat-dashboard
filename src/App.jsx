@@ -6,6 +6,7 @@ import Editor from './pages/Editor'
 import ImageManager from './components/ImageManager'
 import Posts from './pages/Posts'
 import PostReader from './pages/PostReader'
+import Images from './pages/Images'
 
 function App() {
 
@@ -23,7 +24,7 @@ function App() {
                 <Route path='/posts' element={<Posts />} />
                 <Route path='/posts/:post' element={<PostReader />} />
                 <Route path='/editor/:post?' element={<Editor />} />
-                <Route path='/images' element={<ImageManager />} />
+                <Route path='/images' element={<Images />} />
               </Routes>
 
             </div>

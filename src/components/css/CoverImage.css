@@ -1,0 +1,23 @@
+.cover-image {
+    height: 300px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.cover-image-options {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    div {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    button {
+        width: fit-content;
+        cursor: pointer;
+    }
+}

@@ -3,7 +3,9 @@ import ImageManager from "../components/ImageManager"
 function Images() {
 
     return(
-        <ImageManager />
+        <ImageManager 
+            allowSelection
+        />
     )
 }
 

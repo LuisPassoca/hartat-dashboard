@@ -1,0 +1,38 @@
+.page-navigation {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+
+    button {
+        border: none;
+        padding: 0;
+        color: rgb(47, 132, 201);
+        cursor: pointer;
+        font: inherit;
+
+        background-color: white !important;
+    }
+    
+    button:hover {
+        text-decoration: underline;
+    }
+    
+    button:disabled {
+        
+        color: rgb(168, 168, 168);
+        text-decoration: none;
+        cursor: auto;
+    }
+
+    .selected-button {
+        color: rgb(29, 29, 29);
+    }
+}

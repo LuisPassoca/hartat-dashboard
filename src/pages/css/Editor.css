@@ -1,0 +1,22 @@
+.quill-editor-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 80vh;
+    min-width: 0;
+}
+
+h1[contenteditable = 'true']:empty::before {
+    content: "Insert Title...";
+
+    color: rgb(110, 110, 110);
+    font-weight: 500;
+}
+
+h1[contenteditable = 'true'] {
+    cursor: text;
+    margin: 0;
+    padding: 5px 10px;
+    background-color: rgb(238, 238, 238);
+    outline: none;
+}

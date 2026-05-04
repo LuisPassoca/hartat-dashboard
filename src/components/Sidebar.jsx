@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './Sidebar.css'
+import './css/Sidebar.css'
 import { NavLink } from 'react-router-dom'
 
 function Sidebar(props) {

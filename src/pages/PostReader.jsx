@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useRef } from 'react'
 
-import './PostReader.css'
+import './css/PostReader.css'
 
 function PostReader() {
     const { post } = useParams()
