@@ -7,6 +7,7 @@ import ImageManager from './components/ImageManager'
 import Posts from './pages/Posts'
 import PostReader from './pages/PostReader'
 import Images from './pages/Images'
+import BlogEditor from './editors/BlogEditor'
 
 function App() {
 
@@ -25,6 +26,8 @@ function App() {
                 <Route path='/posts/:post' element={<PostReader />} />
                 <Route path='/editor/:post?' element={<Editor />} />
                 <Route path='/images' element={<Images />} />
+                <Route path='/blog' element={<BlogEditor />} />
+                <Route path='*' element={ <> <h1> Erro 404: </h1> <h2> Página não encontrada. </h2> </> } />
               </Routes>
 
             </div>
