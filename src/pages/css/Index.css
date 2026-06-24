@@ -1,0 +1,58 @@
+.index-page {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+
+    height: 100%;
+}
+
+.index-page .top-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    width: 100%;
+}
+
+.index-page .content-selector {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    select {
+        height: 100%;
+        cursor: pointer;
+    }
+}
+
+.index-page .search-bar {
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex: 1;
+
+    input {
+        padding: 5px 10px;
+        border-radius: 15px;
+
+        flex: 1;
+    }
+
+    i {
+        position: absolute;
+        pointer-events: none;
+
+        right: 0;
+        margin-right: 10px;
+    }
+}
+
+.index-page .list-content {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.index-page .page-navigation {
+    margin-top: auto;
+}

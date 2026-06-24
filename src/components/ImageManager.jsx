@@ -154,7 +154,6 @@ function ImageManager({ modal, closeModal, onPick, allowSelection }) {
                 ctx.drawImage(image, 0, 0, targetWidth, targetHeight)
 
                 canvas.toBlob((blob) => {
-                    console.log(URL.createObjectURL(blob))
                     res(new File([blob], file.name))
                 }, 'image/webp', 80)
             }

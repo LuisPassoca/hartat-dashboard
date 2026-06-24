@@ -1,0 +1,120 @@
+.movie-editor {
+    h1 { margin: 0 }
+}
+
+.banner-wrapper .banner-options, .cover-wrapper .cover-options {
+    display: flex;
+    gap: 5px;
+
+    margin-top: auto;
+
+    p { margin: 0 }
+    button { 
+        cursor: pointer;
+        flex: 0;
+    }
+}
+
+.cover-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.banner-wrapper .banner-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.cover-wrapper .cover-image {
+    display: block;
+    margin: auto;
+
+    max-width: 50%;
+    max-height: 300px;
+}
+
+.movie-editor .cover-info-wrapper {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+.movie-editor {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.banner-wrapper, .cover-wrapper, .movie-form {
+    background-color: rgb(236, 236, 236);
+    padding: 10px;
+    width: 100%;
+}
+
+.movie-editor .movie-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    textarea {
+        resize: vertical;
+        height: 100px;
+    }
+
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    select, button {
+        width: fit-content;
+    }
+
+    button { 
+        margin-left: auto;
+        cursor: pointer;
+    }
+}
+
+
+.zmovie-editor .banner-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.zmovie-editor .cover-form-wrapper {
+    display: flex;
+}
+
+.zmovie-editor .cover-form-wrapper * {
+    flex: 1;
+}
+
+.zmovie-editor .image-selector {
+    gap: 5px;
+}
+
+.zcinema-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+
+    label {
+        display: flex;
+        flex-direction: column;
+    }
+
+    button {
+        width: fit-content;
+        margin-left: auto;
+        cursor: pointer;
+    }
+}
+

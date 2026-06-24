@@ -1,0 +1,55 @@
+.movie-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.movie-container {
+    display: flex;
+    height: 200px;
+    gap: 10px;
+
+    background-color: rgb(228, 228, 228);
+    padding: 10px;
+}
+
+.movie-container .movie-cover {
+    aspect-ratio: 1 / 1;
+    height: 100%;
+    width: auto;
+
+    object-fit: cover;
+    object-position: center;
+}
+
+.movie-container .movie-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    width: 100%;
+    height: 100%;
+
+    p { 
+        margin: 0; 
+        word-break: break-all;
+
+        display: -webkit-box;
+        line-clamp: 3;
+        -webkit-line-clamp: 3; 
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+.movie-container .button-wrapper {
+    display: flex;
+    gap: 10px;
+
+    margin-left: auto;
+    margin-top: auto;
+}
+
+.movie-container .button-wrapper button {
+    cursor: pointer;
+}

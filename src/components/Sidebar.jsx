@@ -12,23 +12,23 @@ function Sidebar(props) {
 
             <ul>
                 <li> 
-                    <NavLink to='/posts' className={({isActive}) => isActive ? 'selected' : ''}>
+                    <NavLink to='/' className={({isActive}) => isActive ? 'selected' : ''}>
                         <i className="fa-solid fa-file-lines" /> 
-                        Posts 
+                        Meu Site
                     </NavLink>
                 </li>
 
                 <li> 
                     <NavLink to='/editor' className={({isActive}) => isActive ? 'selected' : ''}>
                         <i className="fa-solid fa-edit" /> 
-                        Editor 
+                        Criar Conteúdo
                     </NavLink>
                 </li>
                 
                 <li> 
                     <NavLink to='/images' className={({isActive}) => isActive ? 'selected' : ''}>
                         <i className="fa-solid fa-image" /> 
-                        Images 
+                        Minhas Imagens 
                     </NavLink>
                 </li>
             </ul>
