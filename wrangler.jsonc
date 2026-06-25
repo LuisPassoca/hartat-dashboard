@@ -13,14 +13,16 @@
 	"d1_databases": [
 		{
 			"binding": "db",
-			"database_name": "hartat-dashboard",
-			"database_id": "c9bcb76a-c905-4e39-be8c-ecdb465c7c33"
+			"database_name": "hartat-db",
+			"database_id": "1260e71b-087e-43c1-aeb1-761c05cd611b",
+			"remote": true
 		}
 	],
 	"r2_buckets": [
 		{
 			"binding": "bucket",
-			"bucket_name": "hartat-bucket"
+			"bucket_name": "hartat-bucket",
+			"remote": true
 		}
 	]
 }

@@ -15,8 +15,8 @@ CREATE TABLE movies(
     genre               TEXT        NOT NULL,
     age_rating          TEXT        NOT NULL,
 
-    banner_uuid           TEXT,
-    cover_uuid            TEXT,
+    banner_uuid         TEXT,
+    cover_uuid          TEXT,
 
     CONSTRAINT FK_MOVIE_BANNER
         FOREIGN KEY(banner_uuid)
@@ -28,6 +28,39 @@ CREATE TABLE movies(
         REFERENCES images(uuid)
         ON DELETE SET NULL
 );
+
+DROP TABLE IF EXISTS exhibitions;
+CREATE TABLE exhibitions(
+    id              INTEGER     PRIMARY KEY,
+    title           TEXT        NOT NULL,
+    description     TEXT        NOT NULL,
+
+    cover_uuid      TEXT,
+
+    CONSTRAINT FK_EXHIBITION_COVER
+        FOREIGN KEY(cover_uuid)
+        REFERENCES images(uuid)
+        ON DELETE SET NULL
+);
+
+DROP TABLE IF EXISTS exhibition_images;
+CREATE TABLE exhibition_images(
+    exhibition_id   INTEGER     NOT NULL,
+    image_uuid      TEXT        NOT NULL,
+
+    PRIMARY KEY (exhibition_id, image_uuid),
+
+    CONSTRAINT FK_EXHIBITION
+        FOREIGN KEY(exhibition_id)
+        REFERENCES exhibitions(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_IMAGE
+        FOREIGN KEY(image_uuid)
+        REFERENCES images(uuid)
+        ON DELETE CASCADE
+);
+
 --
 /*
 DROP TABLE IF EXISTS imagens;
